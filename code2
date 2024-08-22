@@ -1,0 +1,20 @@
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+
+jest.mock('./bootstrap', () => ({
+  __esModule: true, // For ES6 module compatibility
+  default: jest.fn(),
+}));
+
+describe('index.tsx', () => {
+  test('should dynamically import and execute bootstrap', async () => {
+    // Act as if index.tsx is being executed
+    await act(async () => {
+      await import('./index');
+    });
+
+    // Check if the bootstrap module was imported and executed
+    const bootstrapModule = require('./bootstrap');
+    expect(bootstrapModule.default).toHaveBeenCalled();
+  });
+});
