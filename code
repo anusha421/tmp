@@ -1,1 +1,68 @@
-tmp
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './bootstrap';
+
+// Mock the `createRoot` function from `react-dom/client`
+jest.mock('react-dom/client', () => ({
+  createRoot: jest.fn(),
+}));
+
+describe('bootstrap.tsx', () => {
+  let container: HTMLElement | null;
+
+  beforeEach(() => {
+    // Create a container div and add it to the document body
+    container = document.createElement('div');
+    container.id = 'root';
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    // Cleanup: Remove the container div after each test
+    if (container) {
+      document.body.removeChild(container);
+      container = null;
+    }
+    jest.clearAllMocks(); // Clear any mocks to avoid interference between tests
+  });
+
+  test('should get the container element by ID', () => {
+    // Spy on `getElementById` to ensure it is called correctly
+    const getElementSpy = jest.spyOn(document, 'getElementById');
+    
+    // Import the `bootstrap.tsx` file to execute the code inside it
+    require('./bootstrap');
+    
+    // Expect `getElementById` to be called with 'root'
+    expect(getElementSpy).toHaveBeenCalledWith('root');
+  });
+
+  test('should create a root and render the App component', () => {
+    // Mock the return value of `createRoot` to test if `render` is called correctly
+    const mockRoot = {
+      render: jest.fn(),
+    };
+    (createRoot as jest.Mock).mockReturnValue(mockRoot);
+
+    // Import the `bootstrap.tsx` file to execute the code inside it
+    require('./bootstrap');
+
+    // Expect `createRoot` to be called with the `container` element
+    expect(createRoot).toHaveBeenCalledWith(container);
+
+    // Expect `render` to be called with the `App` component
+    expect(mockRoot.render).toHaveBeenCalledWith(<App />);
+  });
+
+  test('should not create a root or render if container is null', () => {
+    // Mock `getElementById` to return null to simulate a missing root element
+    jest.spyOn(document, 'getElementById').mockReturnValue(null);
+
+    // Import the `bootstrap.tsx` file to execute the code inside it
+    require('./bootstrap');
+
+    // Since `getElementById` returned null, `createRoot` should not be called
+    expect(createRoot).not.toHaveBeenCalled();
+  });
+});
