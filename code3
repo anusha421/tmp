@@ -1,0 +1,36 @@
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class ProxyServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String targetUrl = req.getParameter("url");
+        
+        if (targetUrl == null || targetUrl.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Target URL not provided.");
+            return;
+        }
+
+        URL url = new URL(targetUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        resp.setStatus(responseCode);
+
+        InputStream is = connection.getInputStream();
+        OutputStream os = resp.getOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = is.read(buffer)) != -1) {
+            os.write(buffer, 0, bytesRead);
+        }
+
+        is.close();
+        os.close();
+    }
+}
