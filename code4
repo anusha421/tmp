@@ -1,0 +1,21 @@
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.core.client.JavaScriptObject;
+
+public void handleResponse(String jsonResponse) {
+    // Parse the JSON string into a JSONObject
+    JSONValue value = JSONParser.parseStrict(jsonResponse);
+    JSONObject jsonObject = value.isObject();
+
+    // Check if the object is not null
+    if (jsonObject != null) {
+        // Extract the value of a specific key, e.g., "keyName"
+        JSONValue keyValue = jsonObject.get("keyName");
+        if (keyValue != null) {
+            String keyString = keyValue.isString().stringValue();
+            // Now you have the value of the key
+            System.out.println("Value of keyName: " + keyString);
+        }
+    }
+}
