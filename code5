@@ -32,3 +32,8 @@ public class CustomCorsFilter extends OncePerRequestFilter {
         }
     }
 }
+
+# Enable CORS for all paths, methods, and origins
+cors.allowed-origins=*
+cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+cors.allowed-headers=Content-Type,Authorization,X-Requested-With
