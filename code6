@@ -1,0 +1,32 @@
+public class GenericRepository<T> {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public void delete(T entity) {
+        entityManager.remove(entity);
+        entityManager.flush(); // Ensure changes are flushed to the database
+    }
+
+    public void deleteEntities(List<T> entities) {
+        for (T entity : entities) {
+            delete(entity); // Call the delete function for each entity
+        }
+    }
+
+    public void deleteInTransaction(List<T> entities) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            for (T entity : entities) {
+                entityManager.remove(entity);
+            }
+            entityManager.flush(); // Flush after deleting all entities
+            transaction.commit();  // Commit the transaction
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback(); // Roll back if something goes wrong
+            }
+            throw e; // Handle or log the exception as needed
+        }
+    }
+}
