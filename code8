@@ -1,0 +1,79 @@
+private boolean hasRetriedGet = false;  // Flag for retrying GET request
+private boolean hasRetriedPost = false; // Flag for retrying POST request
+
+public void doGet(String url) {
+    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
+
+    try {
+        builder.sendRequest(null, new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if (response.getStatusCode() == Response.SC_OK) {
+                    // GET request successful, proceed with POST logout request
+                    doPostLogout("/logoutEndpoint");
+                } else {
+                    // If GET request fails, retry if not already retried
+                    handleGetFailure(url);
+                }
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+                // If GET request fails, retry if not already retried
+                handleGetFailure(url);
+            }
+        });
+    } catch (RequestException e) {
+        // Handle RequestException for GET
+        handleGetFailure(url);
+    }
+}
+
+private void handleGetFailure(String url) {
+    if (!hasRetriedGet) {
+        hasRetriedGet = true;  // Mark that we have retried once
+        Window.alert("GET request failed, retrying once...");
+        doGet(url);  // Retry GET request once
+    } else {
+        Window.alert("GET request failed after retry. Please try again later.");
+    }
+}
+
+// POST request to log out
+public void doPostLogout(String url) {
+    RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, URL.encode(url));
+
+    try {
+        builder.sendRequest(null, new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if (response.getStatusCode() == Response.SC_OK) {
+                    // POST request successful, complete logout
+                    Window.Location.replace("/login");  // Redirect to login or home page
+                } else {
+                    // If POST request fails, retry if not already retried
+                    handlePostFailure(url);
+                }
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+                // If POST request fails, retry if not already retried
+                handlePostFailure(url);
+            }
+        });
+    } catch (RequestException e) {
+        // Handle RequestException for POST
+        handlePostFailure(url);
+    }
+}
+
+private void handlePostFailure(String url) {
+    if (!hasRetriedPost) {
+        hasRetriedPost = true;  // Mark that we have retried once
+        Window.alert("POST request failed, retrying once...");
+        doPostLogout(url);  // Retry POST request once
+    } else {
+        Window.alert("POST request failed after retry. Please try again later.");
+    }
+}
