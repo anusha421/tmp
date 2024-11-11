@@ -1,0 +1,5 @@
+SELECT c.name AS column_name
+FROM syscolumns c
+JOIN sysobjects o ON c.id = o.id
+WHERE o.name = 'your_table_name'
+AND o.type = 'U';
