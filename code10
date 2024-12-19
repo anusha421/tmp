@@ -1,0 +1,4 @@
+@BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);  // Initialize mocks and inject dependencies
+    }
