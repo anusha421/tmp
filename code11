@@ -1,0 +1,36 @@
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ConfigurableApplicationContext;
+
+public class InternalUserSetupServiceTest {
+    
+    private E3InternalUsers e3internaluser;
+    private InternalUserSetupService internalUserSetupService;
+    private ConfigurableApplicationContext context;
+
+    @Before
+    public void setup() {
+        // Mock the dependencies
+        e3internaluser = mock(E3InternalUsers.class);
+        internalUserSetupService = new InternalUserSetupService();
+        context = mock(ConfigurableApplicationContext.class);
+    }
+
+    @Test
+    public void testE3InternalUserException() {
+        // Mock behavior to throw exception when getE3InternalUser is called
+        when(e3internaluser.getE3InternalUser()).thenThrow(new RuntimeException("E3 Internal User exception"));
+
+        try {
+            internalUserSetupService.setupInternalUsers();
+            fail("Expected System.exit to be called.");
+        } catch (Exception e) {
+            assertEquals("E3 Internal User exception", e.getMessage());
+        }
+    }
+
+    // You can use a library like PowerMockito to mock System.exit calls and verify if System.exit(1) was called.
+}
