@@ -34,3 +34,37 @@ public class InternalUserSetupServiceTest {
 
     // You can use a library like PowerMockito to mock System.exit calls and verify if System.exit(1) was called.
 }
+
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+
+public class InternalUserSetupServiceTest {
+    
+    private E3InternalUsers e3internaluser;
+    private InternalUserSetupService internalUserSetupService;
+
+    @Before
+    public void setup() {
+        e3internaluser = mock(E3InternalUsers.class);
+        internalUserSetupService = new InternalUserSetupService();
+    }
+
+    @Test
+    public void testE3ActiveUsersEmpty() {
+        // Mock an empty list being returned by getE3InternalUser
+        List<String> e3ActiveUsers = new ArrayList<>();
+        when(e3internaluser.getE3InternalUser()).thenReturn(e3ActiveUsers);
+
+        try {
+            internalUserSetupService.setupInternalUsers();
+            // You can assert that some logging or flow happens when the list is empty
+            // Add assertions based on your logic, e.g., return value or logs
+        } catch (Exception e) {
+            fail("Exception should not have occurred.");
+        }
+    }
+}
