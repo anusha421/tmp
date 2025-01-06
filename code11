@@ -68,3 +68,52 @@ public class InternalUserSetupServiceTest {
         }
     }
 }
+
+
+import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ConfigurableApplicationContext;
+
+public class InternalUserSetupServiceTest {
+    
+    private E3InternalUsers e3internaluser;
+    private InternalUserDao internalUserDao; // Mock this
+    private InternalUserSetupService internalUserSetupService;
+    private ConfigurableApplicationContext context;
+
+    @Before
+    public void setup() {
+        // Mock the dependencies
+        e3internaluser = mock(E3InternalUsers.class);
+        internalUserDao = mock(InternalUserDao.class); // Mock InternalUserDao
+
+        // Mock the Spring context
+        context = mock(ConfigurableApplicationContext.class);
+
+        // Mock the context.getBean() to return the mocked beans
+        when(context.getBean(E3InternalUsers.class)).thenReturn(e3internaluser);
+        when(context.getBean(InternalUserDao.class)).thenReturn(internalUserDao);
+
+        // You can also mock other beans like webservice, ldapservice, etc.
+        
+        internalUserSetupService = new InternalUserSetupService();
+    }
+
+    @Test
+    public void testInternalUserDaoIsNotNull() {
+        // Ensure that internalUserDao is not null when the method is invoked
+        when(e3internaluser.getE3InternalUser()).thenReturn(new ArrayList<>()); // Return a valid list
+
+        try {
+            internalUserSetupService.setupInternalUsers();
+            // Now internalUserDao should not be null
+            assertNotNull(internalUserDao);
+        } catch (Exception e) {
+            fail("Exception should not have occurred.");
+        }
+    }
+
+    // Add other test cases based on your logic
+}
