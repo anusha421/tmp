@@ -1,0 +1,40 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import java.lang.reflect.Field;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
+public class YourServiceTest {
+
+    private ApplicationContext mockContext;
+    private YourService yourService;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        // Mock the ApplicationContext
+        mockContext = Mockito.mock(ApplicationContext.class);
+        
+        // Create a mock of the bean that you expect `context.getBean()` to return
+        SomeBean mockBean = mock(SomeBean.class);
+        when(mockContext.getBean(SomeBean.class)).thenReturn(mockBean);
+
+        // Initialize the static field using reflection
+        Field contextField = YourService.class.getDeclaredField("context");
+        contextField.setAccessible(true);
+        contextField.set(null, mockContext); // Set the static field
+
+        yourService = new YourService();
+    }
+
+    @Test
+    public void testYourMethod() throws Exception {
+        // Call the method that depends on the static field
+        yourService.someMethod();
+
+        // Assert that the mocked bean was used
+        assertNotNull(mockContext.getBean(SomeBean.class));
+    }
+}
