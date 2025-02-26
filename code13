@@ -1,0 +1,34 @@
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest
+public class SecurityFilterChainTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private SecurityFilterChain securityFilterChain;
+
+    @Test
+    public void testFilterChainIsCalled() throws Exception {
+        // Mock behavior for the security filter chain
+        when(securityFilterChain.doFilter(null, null)).thenReturn(null);
+
+        // Perform request that will trigger the security filter chain
+        mockMvc.perform(get("/secure"))
+               .andExpect(status().isUnauthorized());  // Assuming unauthenticated user gets 401
+
+        // Verify that the filter chain is invoked
+        verify(securityFilterChain).doFilter(null, null);
+    }
+}
