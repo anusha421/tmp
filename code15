@@ -1,0 +1,45 @@
+plugins {
+    id("org.springframework.boot") version "3.2.0"
+    id("io.spring.dependency-management") version "1.1.4"
+    kotlin("jvm") version "21"
+    kotlin("plugin.spring") version "1.9.0"
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web") // For REST APIs
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa") // JPA/Hibernate support
+    implementation("org.springframework.boot:spring-boot-starter-security") // Spring Security
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf") // Thymeleaf templating
+    implementation("org.springframework.boot:spring-boot-starter-validation") // Bean validation
+    implementation("org.springframework.boot:spring-boot-starter-aop") // Aspect-Oriented Programming (AOP)
+    implementation("org.springframework.boot:spring-boot-starter-actuator") // Actuator for monitoring
+    implementation("org.springframework.boot:spring-boot-starter-websocket") // WebSockets
+    implementation("org.springframework.boot:spring-boot-starter-mail") // Email support
+    implementation("org.springframework.boot:spring-boot-starter-batch") // Batch processing
+    implementation("org.springframework.boot:spring-boot-starter-cache") // Caching support
+    implementation("org.springframework.boot:spring-boot-starter-quartz") // Quartz Scheduler
+    implementation("org.springframework.boot:spring-boot-starter-data-redis") // Redis support
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb") // MongoDB support
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch") // Elasticsearch
+    implementation("org.springframework.boot:spring-boot-starter-integration") // Spring Integration
+    implementation("org.springframework.boot:spring-boot-starter-amqp") // RabbitMQ
+    implementation("org.springframework.boot:spring-boot-starter-kafka") // Kafka support
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client") // OAuth2 client
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server") // OAuth2 Resource Server
+    implementation("org.springframework.boot:spring-boot-starter-cloud-connectors") // Spring Cloud connectors
+
+    // Database dependencies
+    runtimeOnly("org.postgresql:postgresql") // PostgreSQL driver
+    runtimeOnly("mysql:mysql-connector-java") // MySQL driver
+    runtimeOnly("org.h2database:h2") // H2 in-memory DB
+
+    // Lombok for reducing boilerplate code
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    // Testing
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation("org.springframework.security:spring-security-test")
+}
