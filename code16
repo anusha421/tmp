@@ -36,3 +36,7 @@ public class MyListenerConfig {
         return container;
     }
 }
+
+
+String jarPath = new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+System.out.println("JAR location: " + jarPath);
