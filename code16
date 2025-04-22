@@ -1,4 +1,4 @@
-import javax.jms.ConnectionFactory;
+ import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
 import java.io.File;
 import java.lang.reflect.Method;
@@ -40,3 +40,18 @@ public class MyListenerConfig {
 
 String jarPath = new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
 System.out.println("JAR location: " + jarPath);
+
+
+
+File springJmsJar = new File(libDir, "spring-jms-5.3.34.jar");
+if (springJmsJar.exists()) {
+    URL[] urls = new URL[] { springJmsJar.toURI().toURL() };
+    URLClassLoader springLoader = new URLClassLoader(urls, getClass().getClassLoader());
+
+    // Now you can load Spring's class from the dynamically added URLClassLoader
+    Class<?> clazz = Class.forName("org.springframework.jms.listener.DefaultMessageListenerContainer", true, springLoader);
+    
+    // Continue with your configuration code...
+} else {
+    throw new FileNotFoundException("spring-jms-5.3.34.jar not found in BOOT-INF/lib.");
+}
