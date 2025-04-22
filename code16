@@ -1,0 +1,38 @@
+import javax.jms.ConnectionFactory;
+import javax.jms.MessageListener;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+public class MyListenerConfig {
+
+    public Object createRealSpringContainer(ConnectionFactory connectionFactory, MessageListener messageListener) throws Exception {
+        // Load Spring's JAR manually
+        ClassLoader springLoader = new URLClassLoader(
+            new URL[]{new File("libs/spring-jms-5.3.34.jar").toURI().toURL()},
+            null
+        );
+
+        // Load the class from the Spring JAR
+        Class<?> clazz = Class.forName(
+            "org.springframework.jms.listener.DefaultMessageListenerContainer",
+            true,
+            springLoader
+        );
+
+        // Instantiate it
+        Object container = clazz.getDeclaredConstructor().newInstance();
+
+        // Use reflection to configure it
+        Method setConnectionFactory = clazz.getMethod("setConnectionFactory", ConnectionFactory.class);
+        Method setDestinationName = clazz.getMethod("setDestinationName", String.class);
+        Method setMessageListener = clazz.getMethod("setMessageListener", MessageListener.class);
+
+        setConnectionFactory.invoke(container, connectionFactory);
+        setDestinationName.invoke(container, "MY.QUEUE");
+        setMessageListener.invoke(container, messageListener);
+
+        return container;
+    }
+}
